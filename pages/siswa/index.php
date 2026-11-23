@@ -46,6 +46,7 @@ function h(string|null $teks): string
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Siswa</title>
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
     <h1>Kelola Siswa</h1>
@@ -59,7 +60,7 @@ function h(string|null $teks): string
             id="q"
             name="q"
             value="<?= h($cari) ?>"
-            placeholder="Masukkan nama atau NISN"
+            placeholder="Contoh: Andi atau 0123456789"
         >
         <button type="submit">Cari</button>
         <a href="index.php">Reset</a>

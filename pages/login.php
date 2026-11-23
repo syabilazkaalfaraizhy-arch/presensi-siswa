@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Administrator</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <h1>Login Administrator</h1>
@@ -67,6 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             id="username"
             name="username"
             autocomplete="username"
+            placeholder="Masukkan username"
             required
         >
 
@@ -78,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             id="password"
             name="password"
             autocomplete="current-password"
+            placeholder="Masukkan password"
             required
         >
 

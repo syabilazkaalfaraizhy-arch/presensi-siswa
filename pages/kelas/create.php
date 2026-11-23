@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Kelas</title>
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
     <h1>Tambah Kelas</h1>
@@ -66,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             id="nama_kelas"
             name="nama_kelas"
             maxlength="20"
+            placeholder="Contoh: XI PPLG"
             value="<?= htmlspecialchars($namaKelas, ENT_QUOTES, 'UTF-8') ?>"
             required
         >
@@ -78,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             id="jurusan"
             name="jurusan"
             maxlength="50"
+            placeholder="Contoh: PPLG"
             value="<?= htmlspecialchars($jurusan, ENT_QUOTES, 'UTF-8') ?>"
             required
         >

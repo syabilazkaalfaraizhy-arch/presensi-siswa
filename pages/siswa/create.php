@@ -82,6 +82,7 @@ function escSiswa(string|null $nilai): string
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Siswa</title>
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
     <h1>Tambah Siswa</h1>
@@ -101,6 +102,7 @@ function escSiswa(string|null $nilai): string
             inputmode="numeric"
             pattern="[0-9]{10}"
             maxlength="10"
+            placeholder="Contoh: 0123456789"
             value="<?= escSiswa($nisn) ?>"
             required
         >
@@ -113,6 +115,7 @@ function escSiswa(string|null $nilai): string
             id="nama"
             name="nama"
             maxlength="100"
+            placeholder="Contoh: Andi Pratama"
             value="<?= escSiswa($nama) ?>"
             required
         >
@@ -125,6 +128,7 @@ function escSiswa(string|null $nilai): string
             id="alamat"
             name="alamat"
             maxlength="255"
+            placeholder="Contoh: Jl. Merdeka No. 10"
             value="<?= escSiswa($alamat) ?>"
         >
 
