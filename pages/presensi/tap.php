@@ -58,12 +58,21 @@ function escTap(string $nilai): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulasi Tap Kartu</title>
     <link rel="stylesheet" href="../../style.css">
+    <script src="../../script.js" defer></script>
 </head>
 <body>
     <main class="tap-page">
         <div class="tap-heading">
             <h1>Simulasi Tap Kartu</h1>
             <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
+        </div>
+
+        <div class="tap-live-clock" aria-label="Tanggal dan waktu saat ini">
+            <span class="eyebrow">WAKTU TAP SEKARANG</span>
+            <div class="tap-live-clock-values">
+                <time id="live-date"></time>
+                <time id="live-time"></time>
+            </div>
         </div>
 
         <?php if (isset($_GET['berhasil'])): ?>

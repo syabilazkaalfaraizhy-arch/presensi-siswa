@@ -487,6 +487,47 @@ main > p {
     margin: 0;
 }
 
+.tap-live-clock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    margin-bottom: 20px;
+    padding: 20px 24px;
+    border: 1px solid #294d7c;
+    border-radius: 14px;
+    background: linear-gradient(112deg, #10233f, #1c3d6a 68%, #285184);
+    box-shadow: 0 14px 32px rgb(16 35 63 / 18%);
+}
+
+.tap-live-clock .eyebrow {
+    margin: 0;
+    color: #c8dcff;
+    font-size: 13px;
+}
+
+.tap-live-clock-values {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+}
+
+#live-date {
+    color: #e0ebff;
+    font-size: 16px;
+    text-transform: capitalize;
+}
+
+#live-time {
+    color: #fff;
+    font-size: clamp(38px, 5vw, 54px);
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    letter-spacing: 0.035em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
 .tap-message {
     margin: 0 0 14px;
     padding: 11px 14px;
@@ -1031,6 +1072,28 @@ body > a {
         align-items: flex-start;
         flex-direction: column;
         gap: 10px;
+    }
+
+    .tap-live-clock {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+        padding: 18px;
+    }
+
+    .tap-live-clock-values {
+        width: 100%;
+        align-items: flex-start;
+        flex-direction: column-reverse;
+        gap: 8px;
+    }
+
+    #live-time {
+        font-size: clamp(40px, 12vw, 54px);
+    }
+
+    #live-date {
+        font-size: 14px;
     }
 
     .tap-content {

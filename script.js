@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadLeaderboard();
+    setupLiveClock();
 
     const navs = document.querySelectorAll('header nav');
 
@@ -66,6 +67,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+function setupLiveClock() {
+    const dateElement = document.querySelector('#live-date');
+    const timeElement = document.querySelector('#live-time');
+    if (!dateElement || !timeElement) return;
+
+    const timezone = 'Asia/Makassar';
+    const dateFormatter = new Intl.DateTimeFormat('id-ID', {
+        timeZone: timezone,
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
+    const timeFormatter = new Intl.DateTimeFormat('id-ID', {
+        timeZone: timezone,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hourCycle: 'h23',
+    });
+
+    const updateClock = () => {
+        const now = new Date();
+        dateElement.textContent = dateFormatter.format(now);
+        timeElement.textContent = `${timeFormatter.format(now)} WITA`;
+        timeElement.dateTime = now.toISOString();
+    };
+
+    updateClock();
+    window.setInterval(updateClock, 1000);
+}
 
 async function loadLeaderboard() {
     const container = document.querySelector('#leaderboard-content');
