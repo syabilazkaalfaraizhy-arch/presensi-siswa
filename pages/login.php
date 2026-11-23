@@ -52,16 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login Administrator</title>
     <link rel="stylesheet" href="../style.css">
 </head>
-<body>
-    <h1 class="compact-heading">Login Administrator</h1>
+<body class="login-page">
+    <main class="login-wrapper">
+      <form method="post" class="login-card">
+        <h1>Login Administrator</h1>
 
-    <?php if ($error !== ''): ?>
-        <p style="color: red;">
-            <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-        </p>
-    <?php endif; ?>
+        <?php if ($error !== ''): ?>
+            <p class="login-error">
+                <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+            </p>
+        <?php endif; ?>
 
-    <form method="post" class="content-form">
         <label for="username">Username</label>
         <input
             type="text"
@@ -71,8 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             placeholder="Masukkan username"
             required
         >
-
-        <br><br>
 
         <label for="password">Password</label>
         <input
@@ -84,9 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             required
         >
 
-        <br><br>
-
         <button type="submit">Login</button>
-    </form>
+      </form>
+    </main>
 </body>
 </html>

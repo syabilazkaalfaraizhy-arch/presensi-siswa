@@ -36,6 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$riwayatTap = $db->query(
+    'SELECT siswa.nama, kelas.nama_kelas, presensi.tanggal_waktu
+    FROM presensi
+    INNER JOIN siswa ON presensi.nisn = siswa.nisn
+    INNER JOIN kelas ON siswa.id_kelas = kelas.id_kelas
+    ORDER BY presensi.tanggal_waktu DESC, presensi.id DESC
+    LIMIT 30'
+)->fetchAll(PDO::FETCH_ASSOC);
+
 function escTap(string $nilai): string
 {
     return htmlspecialchars($nilai, ENT_QUOTES, 'UTF-8');
@@ -51,31 +60,69 @@ function escTap(string $nilai): string
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
-    <h1 class="compact-heading">Simulasi Tap Kartu</h1>
-    <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
+    <main class="tap-page">
+        <div class="tap-heading">
+            <h1>Simulasi Tap Kartu</h1>
+            <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
+        </div>
 
-    <?php if (isset($_GET['berhasil'])): ?>
-        <p>Presensi berhasil dicatat.</p>
-    <?php endif; ?>
+        <?php if (isset($_GET['berhasil'])): ?>
+            <p class="tap-message tap-message-success">Presensi berhasil dicatat.</p>
+        <?php endif; ?>
 
-    <?php if ($error !== ''): ?>
-        <p style="color: red;"><?= escTap($error) ?></p>
-    <?php endif; ?>
+        <?php if ($error !== ''): ?>
+            <p class="tap-message tap-message-error"><?= escTap($error) ?></p>
+        <?php endif; ?>
 
-    <form method="post" class="content-form">
-        <label for="nisn">NISN</label>
-        <input
-            type="text"
-            id="nisn"
-            name="nisn"
-            inputmode="numeric"
-            pattern="[0-9]{10}"
-            maxlength="10"
-            placeholder="Contoh: 0123456789"
-            value="<?= escTap($nisn) ?>"
-            required
-        >
-        <button type="submit">Catat Presensi</button>
-    </form>
+        <div class="tap-content">
+            <form method="post" class="tap-form">
+                <p class="eyebrow">SIMULASI KARTU RFID</p>
+                <h2>Catat Presensi</h2>
+                <p class="tap-description">Masukkan NISN siswa. Waktu presensi akan tercatat otomatis.</p>
+                <label for="nisn">NISN</label>
+                <input
+                    type="text"
+                    id="nisn"
+                    name="nisn"
+                    inputmode="numeric"
+                    pattern="[0-9]{10}"
+                    maxlength="10"
+                    placeholder="Contoh: 0123456789"
+                    value="<?= escTap($nisn) ?>"
+                    required
+                >
+                <button type="submit">Catat Presensi</button>
+            </form>
+
+            <section class="tap-history-card" aria-labelledby="tap-history-title">
+                <div class="tap-history-heading">
+                    <div>
+                        <p class="eyebrow">AKTIVITAS TERBARU</p>
+                        <h2 id="tap-history-title">Tap Terakhir</h2>
+                    </div>
+                    <span class="tap-history-limit">Maks. 30 catatan</span>
+                </div>
+
+                <?php if (!$riwayatTap): ?>
+                    <p class="tap-empty">Belum ada presensi yang tercatat.</p>
+                <?php else: ?>
+                    <ul class="tap-history-list">
+                        <?php foreach ($riwayatTap as $baris): ?>
+                            <?php $waktuTap = new DateTimeImmutable($baris['tanggal_waktu']); ?>
+                            <li class="tap-history-item">
+                                <div class="tap-student-info">
+                                    <strong><?= escTap($baris['nama']) ?></strong>
+                                    <span><?= escTap($baris['nama_kelas']) ?></span>
+                                </div>
+                                <time datetime="<?= escTap($waktuTap->format('Y-m-d\TH:i:s')) ?>">
+                                    <?= escTap($waktuTap->format('d/m/Y H:i')) ?>
+                                </time>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                <?php endif; ?>
+            </section>
+        </div>
+    </main>
 </body>
 </html>
