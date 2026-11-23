@@ -52,7 +52,7 @@ function h(string|null $teks): string
     <h1>Kelola Siswa</h1>
     <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
 
-    <p><a href="create.php">Tambah Siswa</a></p>
+    <p><a class="action-button" href="create.php">Tambah Siswa</a></p>
 
     <form method="get" class="data-filter">
         <label for="q">Cari nama atau NISN</label>
@@ -64,7 +64,7 @@ function h(string|null $teks): string
             placeholder="Contoh: Andi atau 0123456789"
         >
         <button type="submit">Cari</button>
-        <a href="index.php">Reset</a>
+        <a class="action-button action-button-secondary" href="index.php">Reset</a>
     </form>
 
     <table border="1" cellpadding="8" cellspacing="0">
@@ -90,7 +90,7 @@ function h(string|null $teks): string
                         <td><?= h($baris['alamat']) ?></td>
                         <td><?= h($baris['nama_kelas']) ?></td>
                         <td>
-                            <a href="edit.php?nisn=<?= urlencode($baris['nisn']) ?>">Ubah</a>
+                            <a class="action-button action-button-small" href="edit.php?nisn=<?= urlencode($baris['nisn']) ?>">Ubah</a>
 
                             <form action="delete.php" method="post" style="display:inline">
                                 <input

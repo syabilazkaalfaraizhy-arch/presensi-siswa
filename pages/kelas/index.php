@@ -31,7 +31,7 @@ $kelas = $db->query(
     <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
 
     <p>
-        <a href="create.php">Tambah Kelas</a>
+        <a class="action-button" href="create.php">Tambah Kelas</a>
     </p>
 
     <?php if (isset($_GET['pesan']) && $_GET['pesan'] === 'kelas_dipakai'): ?>
@@ -59,7 +59,7 @@ $kelas = $db->query(
                         <td><?= htmlspecialchars($baris['nama_kelas'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= htmlspecialchars($baris['jurusan'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td>
-                            <a href="edit.php?id=<?= urlencode((string) $baris['id_kelas']) ?>">Ubah</a>
+                            <a class="action-button action-button-small" href="edit.php?id=<?= urlencode((string) $baris['id_kelas']) ?>">Ubah</a>
 
                             <form action="delete.php" method="post" style="display:inline">
                                 <input

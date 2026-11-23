@@ -132,7 +132,7 @@ function escPresensi(string|null $nilai): string
         </select>
 
         <button type="submit">Terapkan</button>
-        <a href="index.php">Hari Ini</a>
+        <a class="action-button action-button-secondary" href="index.php">Hari Ini</a>
     </form>
 
     <table border="1" cellpadding="8" cellspacing="0">

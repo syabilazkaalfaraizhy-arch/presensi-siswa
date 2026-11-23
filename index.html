@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Presensi Siswa</title>
     <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
         <div class="header-inner">
             <h1>Presensi Siswa</h1>
-            <nav>
+            <button class="nav-toggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="site-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav id="site-nav">
                 <a href="index.html">Dashboard</a>
                 <a href="pages/siswa/index.php">Data Siswa</a>
                 <a href="pages/kelas/index.php">Data Kelas</a>
@@ -62,6 +68,23 @@
             </div>
             <a class="button" href="pages/presensi/tap.php">Buka Halaman Tap</a>
         </section>
+
+        <section class="leaderboard-card" aria-labelledby="leaderboard-title">
+            <div class="leaderboard-heading">
+                <div>
+                    <p class="eyebrow">RINGKASAN KEHADIRAN</p>
+                    <h3 id="leaderboard-title">Leaderboard Presensi</h3>
+                    <p class="leaderboard-note">Peringkat berdasarkan jumlah tap presensi yang tercatat. Data ini menunjukkan kehadiran, bukan jumlah siswa yang tidak hadir.</p>
+                </div>
+                <a class="action-button action-button-secondary" href="pages/presensi/index.php">Lihat Rekap</a>
+            </div>
+            <div id="leaderboard-content" aria-live="polite">
+                <p class="leaderboard-status">Memuat peringkat kelas...</p>
+            </div>
+        </section>
     </main>
+    <footer class="site-footer">
+        <p>&copy; 2026 Presensi Siswa &middot; SMK TI Airlangga Samarinda</p>
+    </footer>
 </body>
 </html>
