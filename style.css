@@ -140,6 +140,23 @@ body {
     font-size: 13px;
 }
 
+.field-error {
+    margin-top: -4px;
+    color: var(--danger);
+    font-size: 12px;
+}
+
+.form-error {
+    width: min(100% - 40px, 600px);
+    margin: 10px auto;
+    padding: 10px 12px;
+    border: 1px solid #f2c4c0;
+    border-radius: 8px;
+    background: var(--danger-bg);
+    color: var(--danger);
+    font-size: 13px;
+}
+
 /* Main navigation on the HTML landing page */
 header {
     position: relative;

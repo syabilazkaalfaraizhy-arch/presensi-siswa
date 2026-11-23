@@ -13,11 +13,17 @@ $kelas = $db->query(
     ORDER BY nama_kelas'
 )->fetchAll(PDO::FETCH_ASSOC);
 
-$error = '';
 $nisn = '';
 $nama = '';
 $alamat = '';
 $idKelas = '';
+
+$errors = [
+    'nisn' => '',
+    'nama' => '',
+    'id_kelas' => '',
+    'form' => '',
+];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nisn = trim($_POST['nisn'] ?? '');
@@ -26,11 +32,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idKelas = trim($_POST['id_kelas'] ?? '');
 
     if (!preg_match('/^[0-9]{10}$/', $nisn)) {
-        $error = 'NISN harus terdiri tepat dari 10 angka.';
-    } elseif ($nama === '') {
-        $error = 'Nama siswa wajib diisi.';
-    } elseif ($idKelas === '') {
-        $error = 'Pilih kelas siswa.';
+        $errors['nisn'] = 'NISN harus terdiri tepat dari 10 angka.';
+    }
+
+    if ($nama === '') {
+        $errors['nama'] = 'Nama siswa wajib diisi.';
+    }
+
+    if ($idKelas === '' || !ctype_digit($idKelas)) {
+        $errors['id_kelas'] = 'Pilih kelas siswa.';
     } else {
         $cekKelas = $db->prepare(
             'SELECT COUNT(*) FROM kelas WHERE id_kelas = :id_kelas'
@@ -38,34 +48,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cekKelas->execute(['id_kelas' => $idKelas]);
 
         if ((int) $cekKelas->fetchColumn() === 0) {
-            $error = 'Kelas yang dipilih tidak tersedia.';
-        } else {
-            $cekNisn = $db->prepare(
-                'SELECT COUNT(*) FROM siswa WHERE nisn = :nisn'
+            $errors['id_kelas'] = 'Kelas yang dipilih tidak tersedia.';
+        }
+    }
+
+    if ($errors['nisn'] === '') {
+        $cekNisn = $db->prepare(
+            'SELECT COUNT(*) FROM siswa WHERE nisn = :nisn'
+        );
+        $cekNisn->execute(['nisn' => $nisn]);
+
+        if ((int) $cekNisn->fetchColumn() > 0) {
+            $errors['nisn'] = 'NISN sudah terdaftar. Periksa kembali NISN siswa.';
+        }
+    }
+
+    if ($errors['nisn'] === '' && $errors['nama'] === '' && $errors['id_kelas'] === '') {
+        try {
+            $simpan = $db->prepare(
+                'INSERT INTO siswa (nisn, nama, alamat, id_kelas)
+                VALUES (:nisn, :nama, :alamat, :id_kelas)'
             );
-            $cekNisn->execute(['nisn' => $nisn]);
+            $simpan->execute([
+                'nisn' => $nisn,
+                'nama' => $nama,
+                'alamat' => $alamat === '' ? null : $alamat,
+                'id_kelas' => $idKelas,
+            ]);
 
-            if ((int) $cekNisn->fetchColumn() > 0) {
-                $error = 'NISN sudah terdaftar. Periksa kembali NISN siswa.';
-            } else {
-                try {
-                    $simpan = $db->prepare(
-                        'INSERT INTO siswa (nisn, nama, alamat, id_kelas)
-                        VALUES (:nisn, :nama, :alamat, :id_kelas)'
-                    );
-                    $simpan->execute([
-                        'nisn' => $nisn,
-                        'nama' => $nama,
-                        'alamat' => $alamat === '' ? null : $alamat,
-                        'id_kelas' => $idKelas,
-                    ]);
-
-                    header('Location: index.php');
-                    exit;
-                } catch (PDOException $e) {
-                    $error = 'Data siswa gagal disimpan. Periksa kembali isianmu.';
-                }
-            }
+            header('Location: index.php');
+            exit;
+        } catch (PDOException $e) {
+            $errors['form'] = 'Data siswa gagal disimpan. Periksa kembali isianmu.';
         }
     }
 }
@@ -87,9 +101,9 @@ function escSiswa(string|null $nilai): string
 <body>
     <h1>Tambah Siswa</h1>
 
-    <?php if ($error !== ''): ?>
-        <p style="color: red;">
-            <?= escSiswa($error) ?>
+    <?php if ($errors['form'] !== ''): ?>
+        <p class="form-error">
+            <?= escSiswa($errors['form']) ?>
         </p>
     <?php endif; ?>
 
@@ -107,6 +121,12 @@ function escSiswa(string|null $nilai): string
             required
         >
 
+        <?php if ($errors['nisn'] !== ''): ?>
+            <small class="field-error">
+                <?= htmlspecialchars($errors['nisn'], ENT_QUOTES, 'UTF-8') ?>
+            </small>
+        <?php endif; ?>
+
         <br><br>
 
         <label for="nama">Nama</label>
@@ -119,6 +139,9 @@ function escSiswa(string|null $nilai): string
             value="<?= escSiswa($nama) ?>"
             required
         >
+        <?php if ($errors['nama'] !== ''): ?>
+            <small class="field-error"><?= escSiswa($errors['nama']) ?></small>
+        <?php endif; ?>
 
         <br><br>
 
@@ -147,6 +170,9 @@ function escSiswa(string|null $nilai): string
                 </option>
             <?php endforeach; ?>
         </select>
+        <?php if ($errors['id_kelas'] !== ''): ?>
+            <small class="field-error"><?= escSiswa($errors['id_kelas']) ?></small>
+        <?php endif; ?>
 
         <br><br>
 
