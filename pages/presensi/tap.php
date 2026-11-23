@@ -64,7 +64,7 @@ function escTap(string $nilai): string
     <main class="tap-page">
         <div class="tap-heading">
             <h1>Simulasi Tap Kartu</h1>
-            <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
+            <a class="back-button" href="../../index.php">&larr; Kembali ke Dashboard</a>
         </div>
 
         <div class="tap-live-clock" aria-label="Tanggal dan waktu saat ini">

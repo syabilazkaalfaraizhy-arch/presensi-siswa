@@ -50,7 +50,7 @@ function h(string|null $teks): string
 </head>
 <body>
     <h1>Kelola Siswa</h1>
-    <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
+    <a class="back-button" href="../../index.php">&larr; Kembali ke Dashboard</a>
 
     <p><a class="action-button" href="create.php">Tambah Siswa</a></p>
 

@@ -97,7 +97,7 @@ function escPresensi(string|null $nilai): string
 </head>
 <body>
     <h1>Rekap Presensi</h1>
-    <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
+    <a class="back-button" href="../../index.php">&larr; Kembali ke Dashboard</a>
 
     <form method="get" class="data-filter">
         <label for="q">Cari nama atau NISN</label>

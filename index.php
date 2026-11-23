@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/includes/auth_check.php';
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,7 +21,7 @@
                 <span></span>
             </button>
             <nav id="site-nav">
-                <a href="index.html">Dashboard</a>
+                <a href="index.php">Dashboard</a>
                 <a href="pages/siswa/index.php">Data Siswa</a>
                 <a href="pages/kelas/index.php">Data Kelas</a>
                 <a href="pages/presensi/index.php">Rekap Presensi</a>
