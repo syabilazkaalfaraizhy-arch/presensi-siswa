@@ -1,0 +1,153 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../includes/auth_check.php';
+require_once __DIR__ . '/../../app/core/Database.php';
+
+$database = new Database();
+$db = $database->getConnection();
+
+$kelas = $db->query(
+    'SELECT id_kelas, nama_kelas
+    FROM kelas
+    ORDER BY nama_kelas'
+)->fetchAll(PDO::FETCH_ASSOC);
+
+$error = '';
+$nisn = '';
+$nama = '';
+$alamat = '';
+$idKelas = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nisn = trim($_POST['nisn'] ?? '');
+    $nama = trim($_POST['nama'] ?? '');
+    $alamat = trim($_POST['alamat'] ?? '');
+    $idKelas = trim($_POST['id_kelas'] ?? '');
+
+    if (!preg_match('/^[0-9]{10}$/', $nisn)) {
+        $error = 'NISN harus terdiri tepat dari 10 angka.';
+    } elseif ($nama === '') {
+        $error = 'Nama siswa wajib diisi.';
+    } elseif ($idKelas === '') {
+        $error = 'Pilih kelas siswa.';
+    } else {
+        $cekKelas = $db->prepare(
+            'SELECT COUNT(*) FROM kelas WHERE id_kelas = :id_kelas'
+        );
+        $cekKelas->execute(['id_kelas' => $idKelas]);
+
+        if ((int) $cekKelas->fetchColumn() === 0) {
+            $error = 'Kelas yang dipilih tidak tersedia.';
+        } else {
+            $cekNisn = $db->prepare(
+                'SELECT COUNT(*) FROM siswa WHERE nisn = :nisn'
+            );
+            $cekNisn->execute(['nisn' => $nisn]);
+
+            if ((int) $cekNisn->fetchColumn() > 0) {
+                $error = 'NISN sudah terdaftar. Periksa kembali NISN siswa.';
+            } else {
+                try {
+                    $simpan = $db->prepare(
+                        'INSERT INTO siswa (nisn, nama, alamat, id_kelas)
+                        VALUES (:nisn, :nama, :alamat, :id_kelas)'
+                    );
+                    $simpan->execute([
+                        'nisn' => $nisn,
+                        'nama' => $nama,
+                        'alamat' => $alamat === '' ? null : $alamat,
+                        'id_kelas' => $idKelas,
+                    ]);
+
+                    header('Location: index.php');
+                    exit;
+                } catch (PDOException $e) {
+                    $error = 'Data siswa gagal disimpan. Periksa kembali isianmu.';
+                }
+            }
+        }
+    }
+}
+
+function escSiswa(string|null $nilai): string
+{
+    return htmlspecialchars($nilai ?? '', ENT_QUOTES, 'UTF-8');
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Siswa</title>
+</head>
+<body>
+    <h1>Tambah Siswa</h1>
+
+    <?php if ($error !== ''): ?>
+        <p style="color: red;">
+            <?= escSiswa($error) ?>
+        </p>
+    <?php endif; ?>
+
+    <form method="post">
+        <label for="nisn">NISN (10 angka)</label>
+        <input
+            type="text"
+            id="nisn"
+            name="nisn"
+            inputmode="numeric"
+            pattern="[0-9]{10}"
+            maxlength="10"
+            value="<?= escSiswa($nisn) ?>"
+            required
+        >
+
+        <br><br>
+
+        <label for="nama">Nama</label>
+        <input
+            type="text"
+            id="nama"
+            name="nama"
+            maxlength="100"
+            value="<?= escSiswa($nama) ?>"
+            required
+        >
+
+        <br><br>
+
+        <label for="alamat">Alamat (boleh kosong)</label>
+        <input
+            type="text"
+            id="alamat"
+            name="alamat"
+            maxlength="255"
+            value="<?= escSiswa($alamat) ?>"
+        >
+
+        <br><br>
+
+        <label for="id_kelas">Kelas</label>
+        <select id="id_kelas" name="id_kelas" required>
+            <option value="">Pilih kelas</option>
+
+            <?php foreach ($kelas as $barisKelas): ?>
+                <option
+                    value="<?= escSiswa((string) $barisKelas['id_kelas']) ?>"
+                    <?= $idKelas === (string) $barisKelas['id_kelas'] ? 'selected' : '' ?>
+                >
+                    <?= escSiswa($barisKelas['nama_kelas']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Simpan</button>
+        <a href="index.php">Kembali</a>
+    </form>
+</body>
+</html>
