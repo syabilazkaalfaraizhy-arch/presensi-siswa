@@ -3,15 +3,12 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Siswa.php';
 
 $database = new Database();
-$db = $database->getConnection();
+$modelSiswa = new Siswa($database->getConnection());
 
-$kelas = $db->query(
-    'SELECT id_kelas, nama_kelas
-    FROM kelas
-    ORDER BY nama_kelas'
-)->fetchAll(PDO::FETCH_ASSOC);
+$kelas = $modelSiswa->getKelas();
 
 $nisn = '';
 $nama = '';
@@ -42,39 +39,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($idKelas === '' || !ctype_digit($idKelas)) {
         $errors['id_kelas'] = 'Pilih kelas siswa.';
     } else {
-        $cekKelas = $db->prepare(
-            'SELECT COUNT(*) FROM kelas WHERE id_kelas = :id_kelas'
-        );
-        $cekKelas->execute(['id_kelas' => $idKelas]);
-
-        if ((int) $cekKelas->fetchColumn() === 0) {
+        if (!$modelSiswa->kelasExists((int) $idKelas)) {
             $errors['id_kelas'] = 'Kelas yang dipilih tidak tersedia.';
         }
     }
 
     if ($errors['nisn'] === '') {
-        $cekNisn = $db->prepare(
-            'SELECT COUNT(*) FROM siswa WHERE nisn = :nisn'
-        );
-        $cekNisn->execute(['nisn' => $nisn]);
-
-        if ((int) $cekNisn->fetchColumn() > 0) {
+        if ($modelSiswa->nisnExists($nisn)) {
             $errors['nisn'] = 'NISN sudah terdaftar. Periksa kembali NISN siswa.';
         }
     }
 
     if ($errors['nisn'] === '' && $errors['nama'] === '' && $errors['id_kelas'] === '') {
         try {
-            $simpan = $db->prepare(
-                'INSERT INTO siswa (nisn, nama, alamat, id_kelas)
-                VALUES (:nisn, :nama, :alamat, :id_kelas)'
-            );
-            $simpan->execute([
-                'nisn' => $nisn,
-                'nama' => $nama,
-                'alamat' => $alamat === '' ? null : $alamat,
-                'id_kelas' => $idKelas,
-            ]);
+            $modelSiswa->create($nisn, $nama, $alamat === '' ? null : $alamat, (int) $idKelas);
 
             header('Location: index.php');
             exit;
@@ -88,17 +66,12 @@ function escSiswa(string|null $nilai): string
 {
     return htmlspecialchars($nilai ?? '', ENT_QUOTES, 'UTF-8');
 }
+
+$pageTitle = 'Tambah Siswa';
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/navbar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Siswa</title>
-    <link rel="stylesheet" href="../../style.css">
-</head>
-<body>
     <h1>Tambah Siswa</h1>
 
     <?php if ($errors['form'] !== ''): ?>
@@ -179,5 +152,4 @@ function escSiswa(string|null $nilai): string
         <button type="submit">Simpan</button>
         <a class="back-button" href="index.php">Kembali ke Daftar Siswa</a>
     </form>
-</body>
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

@@ -3,32 +3,25 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Presensi.php';
 
 $database = new Database();
-$db = $database->getConnection();
+$modelPresensi = new Presensi($database->getConnection());
 
-$error = '';
+$nisnError = '';
 $nisn = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nisn = trim($_POST['nisn'] ?? '');
 
     if (!preg_match('/^[0-9]{10}$/', $nisn)) {
-        $error = 'NISN harus terdiri tepat dari 10 angka.';
+        $nisnError = 'NISN harus terdiri tepat dari 10 angka.';
     } else {
-        $cariSiswa = $db->prepare(
-            'SELECT nisn FROM siswa WHERE nisn = :nisn'
-        );
-        $cariSiswa->execute(['nisn' => $nisn]);
-
-        if (!$cariSiswa->fetch()) {
-            $error = 'NISN tidak terdaftar. Periksa kembali kartu siswa.';
+        if (!$modelPresensi->studentExists($nisn)) {
+            $nisnError = 'NISN tidak terdaftar. Periksa kembali kartu siswa.';
         } else {
             // id dan tanggal_waktu diisi otomatis oleh database.
-            $simpan = $db->prepare(
-                'INSERT INTO presensi (nisn) VALUES (:nisn)'
-            );
-            $simpan->execute(['nisn' => $nisn]);
+            $modelPresensi->createTap($nisn);
 
             header('Location: tap.php?berhasil=1');
             exit;
@@ -36,31 +29,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$riwayatTap = $db->query(
-    'SELECT siswa.nama, kelas.nama_kelas, presensi.tanggal_waktu
-    FROM presensi
-    INNER JOIN siswa ON presensi.nisn = siswa.nisn
-    INNER JOIN kelas ON siswa.id_kelas = kelas.id_kelas
-    ORDER BY presensi.tanggal_waktu DESC, presensi.id DESC
-    LIMIT 30'
-)->fetchAll(PDO::FETCH_ASSOC);
+$riwayatTap = $modelPresensi->getRecent(30);
 
 function escTap(string $nilai): string
 {
     return htmlspecialchars($nilai, ENT_QUOTES, 'UTF-8');
 }
+
+$pageTitle = 'Simulasi Tap Kartu';
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/navbar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulasi Tap Kartu</title>
-    <link rel="stylesheet" href="../../style.css">
-    <script src="../../script.js" defer></script>
-</head>
-<body>
     <main class="tap-page">
         <div class="tap-heading">
             <h1>Simulasi Tap Kartu</h1>
@@ -79,12 +59,8 @@ function escTap(string $nilai): string
             <p class="tap-message tap-message-success">Presensi berhasil dicatat.</p>
         <?php endif; ?>
 
-        <?php if ($error !== ''): ?>
-            <p class="tap-message tap-message-error"><?= escTap($error) ?></p>
-        <?php endif; ?>
-
         <div class="tap-content">
-            <form method="post" class="tap-form">
+            <form method="post" class="tap-form" novalidate>
                 <p class="eyebrow">SIMULASI KARTU RFID</p>
                 <h2>Catat Presensi</h2>
                 <p class="tap-description">Masukkan NISN siswa. Waktu presensi akan tercatat otomatis.</p>
@@ -100,6 +76,9 @@ function escTap(string $nilai): string
                     value="<?= escTap($nisn) ?>"
                     required
                 >
+                <?php if ($nisnError !== ''): ?>
+                    <small class="field-error"><?= escTap($nisnError) ?></small>
+                <?php endif; ?>
                 <button type="submit">Catat Presensi</button>
             </form>
 
@@ -133,5 +112,4 @@ function escTap(string $nilai): string
             </section>
         </div>
     </main>
-</body>
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

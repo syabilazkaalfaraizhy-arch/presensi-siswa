@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Siswa.php';
 
 $database = new Database();
-$db = $database->getConnection();
+$modelSiswa = new Siswa($database->getConnection());
 
 $nisnLama = trim($_GET['nisn'] ?? '');
 
@@ -14,26 +15,16 @@ if ($nisnLama === '') {
     exit;
 }
 
-$cari = $db->prepare(
-    'SELECT nisn, nama, alamat, id_kelas
-    FROM siswa
-    WHERE nisn = :nisn'
-);
-$cari->execute(['nisn' => $nisnLama]);
-$siswa = $cari->fetch(PDO::FETCH_ASSOC);
+$siswa = $modelSiswa->findByNisn($nisnLama);
 
 if (!$siswa) {
     header('Location: index.php');
     exit;
 }
 
-$kelas = $db->query(
-    'SELECT id_kelas, nama_kelas
-    FROM kelas
-    ORDER BY nama_kelas'
-)->fetchAll(PDO::FETCH_ASSOC);
+$kelas = $modelSiswa->getKelas();
 
-$error = '';
+$errors = ['nisn' => '', 'nama' => '', 'id_kelas' => '', 'form' => ''];
 $nisn = $siswa['nisn'];
 $nama = $siswa['nama'];
 $alamat = $siswa['alamat'] ?? '';
@@ -46,57 +37,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $idKelas = trim($_POST['id_kelas'] ?? '');
 
     if (!preg_match('/^[0-9]{10}$/', $nisn)) {
-        $error = 'NISN harus terdiri tepat dari 10 angka.';
-    } elseif ($nama === '') {
-        $error = 'Nama siswa wajib diisi.';
-    } elseif ($idKelas === '') {
-        $error = 'Pilih kelas siswa.';
-    } else {
-        $cekKelas = $db->prepare(
-            'SELECT COUNT(*) FROM kelas WHERE id_kelas = :id_kelas'
-        );
-        $cekKelas->execute(['id_kelas' => $idKelas]);
+        $errors['nisn'] = 'NISN harus terdiri tepat dari 10 angka.';
+    } elseif ($modelSiswa->nisnExists($nisn, $nisnLama)) {
+        $errors['nisn'] = 'NISN sudah digunakan siswa lain.';
+    }
 
-        if ((int) $cekKelas->fetchColumn() === 0) {
-            $error = 'Kelas yang dipilih tidak tersedia.';
-        } else {
-            $cekNisn = $db->prepare(
-                'SELECT COUNT(*)
-                FROM siswa
-                WHERE nisn = :nisn
-                AND nisn <> :nisn_lama'
-            );
-            $cekNisn->execute([
-                'nisn' => $nisn,
-                'nisn_lama' => $nisnLama,
-            ]);
+    if ($nama === '') {
+        $errors['nama'] = 'Nama siswa wajib diisi.';
+    }
 
-            if ((int) $cekNisn->fetchColumn() > 0) {
-                $error = 'NISN sudah digunakan siswa lain.';
-            } else {
-                try {
-                    $ubah = $db->prepare(
-                        'UPDATE siswa
-                        SET nisn = :nisn,
-                            nama = :nama,
-                            alamat = :alamat,
-                            id_kelas = :id_kelas
-                        WHERE nisn = :nisn_lama'
-                    );
-                    $ubah->execute([
-                        'nisn' => $nisn,
-                        'nama' => $nama,
-                        'alamat' => $alamat === '' ? null : $alamat,
-                        'id_kelas' => $idKelas,
-                        'nisn_lama' => $nisnLama,
-                    ]);
+    if ($idKelas === '' || !ctype_digit($idKelas)) {
+        $errors['id_kelas'] = 'Pilih kelas siswa.';
+    } elseif (!$modelSiswa->kelasExists((int) $idKelas)) {
+        $errors['id_kelas'] = 'Kelas yang dipilih tidak tersedia.';
+    }
 
-                    header('Location: index.php');
-                    exit;
-                } catch (PDOException $e) {
-                    $error = 'Data gagal diperbarui. NISN mungkin masih dipakai pada log presensi.';
-                }
-            }
+    if ($errors['nisn'] === '' && $errors['nama'] === '' && $errors['id_kelas'] === '') {
+        try {
+            $modelSiswa->update($nisnLama, $nisn, $nama, $alamat === '' ? null : $alamat, (int) $idKelas);
+            header('Location: index.php');
+            exit;
+        } catch (PDOException $e) {
+            $errors['form'] = 'Data gagal diperbarui. NISN mungkin masih dipakai pada log presensi.';
         }
     }
 }
@@ -105,26 +67,19 @@ function escEditSiswa(string|null $nilai): string
 {
     return htmlspecialchars($nilai ?? '', ENT_QUOTES, 'UTF-8');
 }
+
+$pageTitle = 'Ubah Siswa';
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/navbar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubah Siswa</title>
-    <link rel="stylesheet" href="../../style.css">
-</head>
-<body>
     <h1>Ubah Siswa</h1>
 
-    <?php if ($error !== ''): ?>
-        <p style="color: red;">
-            <?= escEditSiswa($error) ?>
-        </p>
+    <?php if ($errors['form'] !== ''): ?>
+        <p class="form-error"><?= escEditSiswa($errors['form']) ?></p>
     <?php endif; ?>
 
-    <form method="post">
+    <form method="post" novalidate>
         <label for="nisn">NISN (10 angka)</label>
         <input
             type="text"
@@ -137,6 +92,9 @@ function escEditSiswa(string|null $nilai): string
             value="<?= escEditSiswa($nisn) ?>"
             required
         >
+        <?php if ($errors['nisn'] !== ''): ?>
+            <small class="field-error"><?= escEditSiswa($errors['nisn']) ?></small>
+        <?php endif; ?>
 
         <br><br>
 
@@ -150,6 +108,9 @@ function escEditSiswa(string|null $nilai): string
             value="<?= escEditSiswa($nama) ?>"
             required
         >
+        <?php if ($errors['nama'] !== ''): ?>
+            <small class="field-error"><?= escEditSiswa($errors['nama']) ?></small>
+        <?php endif; ?>
 
         <br><br>
 
@@ -178,11 +139,13 @@ function escEditSiswa(string|null $nilai): string
                 </option>
             <?php endforeach; ?>
         </select>
+        <?php if ($errors['id_kelas'] !== ''): ?>
+            <small class="field-error"><?= escEditSiswa($errors['id_kelas']) ?></small>
+        <?php endif; ?>
 
         <br><br>
 
         <button type="submit">Simpan Perubahan</button>
         <a class="back-button" href="index.php">Kembali ke Daftar Siswa</a>
     </form>
-</body>
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

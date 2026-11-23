@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Presensi.php';
 
 $database = new Database();
-$db = $database->getConnection();
+$modelPresensi = new Presensi($database->getConnection());
 
 $tanggal = trim($_GET['tanggal'] ?? date('Y-m-d'));
 if (
@@ -33,10 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     );
 
     if ($idPresensi) {
-        $hapus = $db->prepare(
-            'DELETE FROM presensi WHERE id = :id'
-        );
-        $hapus->execute(['id' => $idPresensi]);
+        $modelPresensi->delete($idPresensi);
     }
 
     $filter = [
@@ -49,53 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-$kelas = $db->query(
-    'SELECT id_kelas, nama_kelas
-    FROM kelas
-    ORDER BY nama_kelas'
-)->fetchAll(PDO::FETCH_ASSOC);
-
-$sql = 'SELECT presensi.id, presensi.nisn, presensi.tanggal_waktu,
-            siswa.nama, kelas.nama_kelas
-        FROM presensi
-        INNER JOIN siswa ON presensi.nisn = siswa.nisn
-        INNER JOIN kelas ON siswa.id_kelas = kelas.id_kelas
-        WHERE DATE(presensi.tanggal_waktu) = :tanggal';
-
-$parameter = ['tanggal' => $tanggal];
-
-if ($idKelas !== '') {
-    $sql .= ' AND kelas.id_kelas = :id_kelas';
-    $parameter['id_kelas'] = $idKelas;
-}
-
-if ($cari !== '') {
-    $sql .= ' AND (siswa.nama LIKE :nama OR siswa.nisn LIKE :nisn)';
-    $parameter['nama'] = '%' . $cari . '%';
-    $parameter['nisn'] = '%' . $cari . '%';
-}
-
-$sql .= ' ORDER BY presensi.tanggal_waktu DESC';
-
-$stmt = $db->prepare($sql);
-$stmt->execute($parameter);
-$presensi = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$kelas = $modelPresensi->getKelas();
+$presensi = $modelPresensi->getByFilter($tanggal, $idKelas, $cari);
 
 function escPresensi(string|null $nilai): string
 {
     return htmlspecialchars($nilai ?? '', ENT_QUOTES, 'UTF-8');
 }
+
+$pageTitle = 'Rekap Presensi';
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/navbar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekap Presensi</title>
-    <link rel="stylesheet" href="../../style.css">
-</head>
-<body>
     <h1>Rekap Presensi</h1>
     <a class="back-button" href="../../index.php">&larr; Kembali ke Dashboard</a>
 
@@ -180,5 +144,4 @@ function escPresensi(string|null $nilai): string
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

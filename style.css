@@ -141,7 +141,8 @@ body {
 }
 
 .field-error {
-    margin-top: -4px;
+    display: block;
+    margin: 5px 0 0;
     color: var(--danger);
     font-size: 12px;
 }

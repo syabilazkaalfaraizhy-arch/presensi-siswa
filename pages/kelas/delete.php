@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Kelas.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: index.php');
@@ -17,27 +18,16 @@ if (!$id) {
 }
 
 $database = new Database();
-$db = $database->getConnection();
+$modelKelas = new Kelas($database->getConnection());
 
 // Pastikan kelas tidak masih memiliki siswa.
-$cek = $db->prepare(
-    'SELECT COUNT(*)
-    FROM siswa
-    WHERE id_kelas = :id_kelas'
-);
-$cek->execute(['id_kelas' => $id]);
-
-if ((int) $cek->fetchColumn() > 0) {
+if ($modelKelas->hasStudents($id)) {
     header('Location: index.php?pesan=kelas_dipakai');
     exit;
 }
 
 try {
-    $hapus = $db->prepare(
-        'DELETE FROM kelas
-        WHERE id_kelas = :id_kelas'
-    );
-    $hapus->execute(['id_kelas' => $id]);
+    $modelKelas->delete($id);
 } catch (PDOException $e) {
     // Jangan tampilkan pesan error database mentah.
     header('Location: index.php?pesan=gagal_hapus');

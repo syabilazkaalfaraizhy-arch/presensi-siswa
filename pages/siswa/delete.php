@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Siswa.php';
 
 function escHapusSiswa(string $nilai): string
 {
@@ -11,22 +12,15 @@ function escHapusSiswa(string $nilai): string
 
 function tampilkanPesan(string $pesan): void
 {
+    $pageTitle = 'Hapus Siswa';
+    require_once __DIR__ . '/../../includes/header.php';
+    require_once __DIR__ . '/../../includes/navbar.php';
     ?>
-    <!DOCTYPE html>
-    <html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Hapus Siswa</title>
-        <link rel="stylesheet" href="../../style.css">
-    </head>
-    <body>
-        <h1>Hapus Siswa</h1>
-        <p><?= escHapusSiswa($pesan) ?></p>
-        <a class="back-button" href="index.php">Kembali ke Daftar Siswa</a>
-    </body>
-    </html>
+    <h1>Hapus Siswa</h1>
+    <p><?= escHapusSiswa($pesan) ?></p>
+    <a class="back-button" href="index.php">Kembali ke Daftar Siswa</a>
     <?php
+    require_once __DIR__ . '/../../includes/footer.php';
     exit;
 }
 
@@ -42,24 +36,16 @@ if (!preg_match('/^[0-9]{10}$/', $nisn)) {
 }
 
 $database = new Database();
-$db = $database->getConnection();
+$modelSiswa = new Siswa($database->getConnection());
 
-$cek = $db->prepare(
-    'SELECT COUNT(*) FROM presensi WHERE nisn = :nisn'
-);
-$cek->execute(['nisn' => $nisn]);
-
-if ((int) $cek->fetchColumn() > 0) {
+if ($modelSiswa->hasPresensi($nisn)) {
     tampilkanPesan(
         'Siswa tidak dapat dihapus karena masih memiliki log presensi. Hapus log presensinya terlebih dahulu.'
     );
 }
 
 try {
-    $hapus = $db->prepare(
-        'DELETE FROM siswa WHERE nisn = :nisn'
-    );
-    $hapus->execute(['nisn' => $nisn]);
+    $modelSiswa->delete($nisn);
 } catch (PDOException $e) {
     tampilkanPesan('Data siswa gagal dihapus. Silakan coba lagi.');
 }

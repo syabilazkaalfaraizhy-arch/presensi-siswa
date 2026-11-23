@@ -3,6 +3,7 @@ declare(strict_types=1);
 session_start();
 
 require_once __DIR__ . '/../app/Core/Database.php';
+require_once __DIR__ . '/../app/models/User.php';
 
 if (isset($_SESSION['id_user'])) {
     header('Location: presensi/index.php');
@@ -17,16 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         $database = new Database();
-        $db = $database->getConnection();
-
-        $query = $db->prepare(
-            'SELECT id_user, username, password
-            FROM users
-            WHERE username = :username
-            LIMIT 1'
-        );
-        $query->execute(['username' => $username]);
-        $user = $query->fetch();
+        $modelUser = new User($database->getConnection());
+        $user = $modelUser->findByUsername($username);
 
         if ($user && password_verify($password, $user['password'])) {
             session_regenerate_id(true);
@@ -43,16 +36,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = 'Tidak bisa terhubung ke database. Periksa pengaturannya.';
     }
 }
+
+$pageTitle = 'Login Administrator';
+$bodyClass = 'login-page';
+$showNavbar = false;
+$showFooter = false;
+require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/navbar.php';
 ?>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Administrator</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
-<body class="login-page">
+
     <main class="login-wrapper">
       <form method="post" class="login-card">
         <h1>Login Administrator</h1>
@@ -86,5 +78,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit">Login</button>
       </form>
     </main>
-</body>
-</html>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

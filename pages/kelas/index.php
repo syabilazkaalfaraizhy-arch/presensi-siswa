@@ -3,30 +3,21 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Kelas.php';
 
 $database = new Database();
-$db = $database->getConnection();
+$modelKelas = new Kelas($database->getConnection());
+$kelas = $modelKelas->getAll();
 
-$kelas = $db->query(
-    'SELECT id_kelas, nama_kelas, jurusan
-    FROM kelas
-    ORDER BY id_kelas ASC'
-)->fetchAll(PDO::FETCH_ASSOC);
+$pageTitle = 'Kelola Kelas';
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/navbar.php';
 ?>
 
 <?php if (isset($_GET['pesan']) && $_GET['pesan'] === 'gagal_hapus'): ?>
     <p>Kelas gagal dihapus. Coba lagi atau periksa data siswa terkait.</p>
 <?php endif; ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelola Kelas</title>
-    <link rel="stylesheet" href="../../style.css">
-</head>
-<body>
     <h1>Kelola Kelas</h1>
     <a class="back-button" href="../../index.php">&larr; Kembali ke Dashboard</a>
 
@@ -80,5 +71,4 @@ $kelas = $db->query(
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

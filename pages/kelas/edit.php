@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/auth_check.php';
 require_once __DIR__ . '/../../app/core/Database.php';
+require_once __DIR__ . '/../../app/models/Kelas.php';
 
 $database = new Database();
-$db = $database->getConnection();
+$modelKelas = new Kelas($database->getConnection());
 
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -14,20 +15,14 @@ if (!$id) {
     exit;
 }
 
-$cari = $db->prepare(
-    'SELECT id_kelas, nama_kelas, jurusan
-    FROM kelas
-    WHERE id_kelas = :id'
-);
-$cari->execute(['id' => $id]);
-$kelas = $cari->fetch();
+$kelas = $modelKelas->findById($id);
 
 if (!$kelas) {
     header('Location: index.php');
     exit;
 }
 
-$error = '';
+$errors = ['nama_kelas' => '', 'jurusan' => ''];
 $namaKelas = $kelas['nama_kelas'];
 $jurusan = $kelas['jurusan'];
 
@@ -35,64 +30,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $namaKelas = trim($_POST['nama_kelas'] ?? '');
     $jurusan = trim($_POST['jurusan'] ?? '');
 
-    if ($namaKelas === '' || $jurusan === '') {
-        $error = 'Nama kelas dan jurusan wajib diisi.';
-    } else {
-        $cek = $db->prepare(
-            'SELECT COUNT(*)
-            FROM kelas
-            WHERE nama_kelas = :nama_kelas
-            AND id_kelas <> :id'
-        );
-        $cek->execute([
-            'nama_kelas' => $namaKelas,
-            'id' => $id,
-        ]);
+    if ($namaKelas === '') {
+        $errors['nama_kelas'] = 'Nama kelas wajib diisi.';
+    } elseif ($modelKelas->nameExists($namaKelas, $id)) {
+        $errors['nama_kelas'] = 'Nama kelas sudah digunakan. Masukkan nama lain.';
+    }
 
-        if ((int) $cek->fetchColumn() > 0) {
-            $error = 'Nama kelas sudah digunakan. Masukkan nama lain.';
-        } else {
-            try {
-                $ubah = $db->prepare(
-                    'UPDATE kelas
-                    SET nama_kelas = :nama_kelas,
-                    jurusan = :jurusan
-                    WHERE id_kelas = :id'
-                );
-                $ubah->execute([
-                    'nama_kelas' => $namaKelas,
-                    'jurusan' => $jurusan,
-                    'id' => $id,
-                ]);
+    if ($jurusan === '') {
+        $errors['jurusan'] = 'Jurusan wajib diisi.';
+    }
 
-                header('Location: index.php');
-                exit;
-            } catch (PDOException $e) {
-                $error = 'Data kelas gagal diperbarui. Periksa kembali nama kelas.';
-            }
+    if ($errors['nama_kelas'] === '' && $errors['jurusan'] === '') {
+        try {
+            $modelKelas->update($id, $namaKelas, $jurusan);
+            header('Location: index.php');
+            exit;
+        } catch (PDOException $e) {
+            $errors['nama_kelas'] = 'Data kelas gagal diperbarui. Periksa kembali nama kelas.';
         }
     }
 }
+
+$pageTitle = 'Ubah Kelas';
+require_once __DIR__ . '/../../includes/header.php';
+require_once __DIR__ . '/../../includes/navbar.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubah Kelas</title>
-    <link rel="stylesheet" href="../../style.css">
-</head>
-<body>
     <h1>Ubah Kelas</h1>
 
-    <?php if ($error !== ''): ?>
-        <p style="color: red;">
-            <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
-        </p>
-    <?php endif; ?>
-
-    <form method="post">
+    <form method="post" novalidate>
         <label for="nama_kelas">Nama Kelas</label>
         <input
             type="text"
@@ -103,6 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             value="<?= htmlspecialchars($namaKelas, ENT_QUOTES, 'UTF-8') ?>"
             required
         >
+        <?php if ($errors['nama_kelas'] !== ''): ?>
+            <small class="field-error"><?= htmlspecialchars($errors['nama_kelas'], ENT_QUOTES, 'UTF-8') ?></small>
+        <?php endif; ?>
 
         <br><br>
 
@@ -116,11 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             value="<?= htmlspecialchars($jurusan, ENT_QUOTES, 'UTF-8') ?>"
             required
         >
+        <?php if ($errors['jurusan'] !== ''): ?>
+            <small class="field-error"><?= htmlspecialchars($errors['jurusan'], ENT_QUOTES, 'UTF-8') ?></small>
+        <?php endif; ?>
 
         <br><br>
 
         <button type="submit">Simpan Perubahan</button>
         <a class="back-button" href="index.php">Kembali ke Daftar Kelas</a>
     </form>
-</body>
-</html>
+<?php require_once __DIR__ . '/../../includes/footer.php'; ?>

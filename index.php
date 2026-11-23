@@ -1,36 +1,9 @@
 <?php
 require_once __DIR__ . '/includes/auth_check.php';
+$pageTitle = 'Dashboard';
+require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/navbar.php';
 ?>
-
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presensi Siswa</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
-</head>
-<body>
-    <header>
-        <div class="header-inner">
-            <h1>Presensi Siswa</h1>
-            <button class="nav-toggle" type="button" aria-label="Buka menu navigasi" aria-expanded="false" aria-controls="site-nav">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <nav id="site-nav">
-                <a href="index.php">Dashboard</a>
-                <a href="pages/siswa/index.php">Data Siswa</a>
-                <a href="pages/kelas/index.php">Data Kelas</a>
-                <a href="pages/presensi/index.php">Rekap Presensi</a>
-                <a href="pages/presensi/tap.php">Simulasi Tap</a>
-                <a href="pages/login.php">Login</a>
-                <a href="pages/logout.php">Logout</a>
-            </nav>
-        </div>
-    </header>
 
     <main class="dashboard">
         <div class="dashboard-intro">
@@ -87,8 +60,4 @@ require_once __DIR__ . '/includes/auth_check.php';
             </div>
         </section>
     </main>
-    <footer class="site-footer">
-        <p>&copy; 2026 Presensi Siswa &middot; SMK TI Airlangga Samarinda</p>
-    </footer>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
