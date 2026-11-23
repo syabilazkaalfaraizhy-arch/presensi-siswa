@@ -23,7 +23,7 @@ function tampilkanPesan(string $pesan): void
     <body>
         <h1>Hapus Siswa</h1>
         <p><?= escHapusSiswa($pesan) ?></p>
-        <a href="index.php">Kembali ke daftar siswa</a>
+        <a class="back-button" href="index.php">Kembali ke Daftar Siswa</a>
     </body>
     </html>
     <?php

@@ -151,7 +151,7 @@ function escSiswa(string|null $nilai): string
         <br><br>
 
         <button type="submit">Simpan</button>
-        <a href="index.php">Kembali</a>
+        <a class="back-button" href="index.php">Kembali ke Daftar Siswa</a>
     </form>
 </body>
 </html>

@@ -51,7 +51,8 @@ function escTap(string $nilai): string
     <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
-    <h1>Simulasi Tap Kartu</h1>
+    <h1 class="compact-heading">Simulasi Tap Kartu</h1>
+    <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
 
     <?php if (isset($_GET['berhasil'])): ?>
         <p>Presensi berhasil dicatat.</p>
@@ -61,7 +62,7 @@ function escTap(string $nilai): string
         <p style="color: red;"><?= escTap($error) ?></p>
     <?php endif; ?>
 
-    <form method="post">
+    <form method="post" class="content-form">
         <label for="nisn">NISN</label>
         <input
             type="text"

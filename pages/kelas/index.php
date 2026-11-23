@@ -28,6 +28,7 @@ $kelas = $db->query(
 </head>
 <body>
     <h1>Kelola Kelas</h1>
+    <a class="back-button" href="../../index.html">&larr; Kembali ke Dashboard</a>
 
     <p>
         <a href="create.php">Tambah Kelas</a>

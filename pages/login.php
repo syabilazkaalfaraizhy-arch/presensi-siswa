@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <h1>Login Administrator</h1>
+    <h1 class="compact-heading">Login Administrator</h1>
 
     <?php if ($error !== ''): ?>
         <p style="color: red;">
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </p>
     <?php endif; ?>
 
-    <form method="post">
+    <form method="post" class="content-form">
         <label for="username">Username</label>
         <input
             type="text"

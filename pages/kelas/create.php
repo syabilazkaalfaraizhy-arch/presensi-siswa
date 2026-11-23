@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <br><br>
 
         <button type="submit">Simpan</button>
-        <a href="index.php">Kembali</a>
+        <a class="back-button" href="index.php">Kembali ke Daftar Kelas</a>
     </form>
 </body>
 </html>

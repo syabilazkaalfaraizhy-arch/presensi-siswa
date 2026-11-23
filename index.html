@@ -22,24 +22,45 @@
         </div>
     </header>
 
-    <main>
-        <h2>Selamat Datang</h2>
-        <p>Aplikasi Presensi Siswa SMK TI Airlangga Samarinda.</p>
+    <main class="dashboard">
+        <div class="dashboard-intro">
+            <div>
+                <p class="eyebrow">SISTEM PRESENSI SISWA</p>
+                <h2>Selamat Datang</h2>
+                <p>Aplikasi Presensi Siswa SMK TI Airlangga Samarinda.</p>
+            </div>
+            <a class="button" href="pages/presensi/tap.php">Mulai Simulasi Tap</a>
+        </div>
 
-        <section>
-            <h3>Simulasi Tap Kartu</h3>
-            <form>
-                <label for="nisn">NISN</label>
-                <input
-                    type="text"
-                    id="nisn"
-                    name="nisn"
-                    maxlength="10"
-                    placeholder="Contoh: 0123456789"
-                    required
-                    >
-                <button type="submit">Catat Presensi</button>
-            </form>
+        <h3 class="section-title">Akses Cepat</h3>
+        <div class="dashboard-grid">
+            <a class="dashboard-card" href="pages/siswa/index.php">
+                <span class="dashboard-icon" aria-hidden="true">01</span>
+                <span class="dashboard-card-title">Data Siswa</span>
+                <span class="dashboard-card-text">Kelola siswa dan cari berdasarkan nama atau NISN.</span>
+                <span class="dashboard-card-link">Buka data siswa &rarr;</span>
+            </a>
+            <a class="dashboard-card" href="pages/kelas/index.php">
+                <span class="dashboard-icon" aria-hidden="true">02</span>
+                <span class="dashboard-card-title">Data Kelas</span>
+                <span class="dashboard-card-text">Lihat dan kelola kelas beserta jurusannya.</span>
+                <span class="dashboard-card-link">Buka data kelas &rarr;</span>
+            </a>
+            <a class="dashboard-card" href="pages/presensi/index.php">
+                <span class="dashboard-icon" aria-hidden="true">03</span>
+                <span class="dashboard-card-title">Rekap Presensi</span>
+                <span class="dashboard-card-text">Cari catatan kehadiran dan gunakan filter rekap.</span>
+                <span class="dashboard-card-link">Buka rekap &rarr;</span>
+            </a>
+        </div>
+
+        <section class="guide-card">
+            <div>
+                <p class="eyebrow">CARA MENGGUNAKAN</p>
+                <h3>Simulasi tap kartu</h3>
+                <p>Masukkan NISN 10 digit seperti yang tercetak pada kartu siswa. Sistem akan memeriksa data siswa dan mengisi waktu presensi secara otomatis.</p>
+            </div>
+            <a class="button" href="pages/presensi/tap.php">Buka Halaman Tap</a>
         </section>
     </main>
 </body>

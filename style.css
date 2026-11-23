@@ -26,7 +26,7 @@ body {
     background: var(--canvas);
     color: var(--ink);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 /* Main navigation on the HTML landing page */
@@ -37,13 +37,13 @@ header {
 }
 
 .header-inner {
-    width: min(100% - 40px, 1120px);
+    width: min(100% - 40px, 960px);
     margin: 0 auto;
-    padding: 20px 0 18px;
+    padding: 14px 0 13px;
 }
 
 header h1 {
-    margin: 0 0 14px;
+    margin: 0 0 9px;
     color: #fff;
     font-size: 24px;
     font-weight: 750;
@@ -53,17 +53,18 @@ header h1 {
 nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 7px;
+    gap: 9px;
 }
 
 nav a {
     display: inline-flex;
     align-items: center;
-    min-height: 38px;
-    padding: 7px 12px;
-    border: 1px solid transparent;
+    min-height: 36px;
+    padding: 6px 11px;
+    border: 1px solid rgb(226 238 255 / 24%);
     border-radius: 8px;
-    color: #e7eefb;
+    background: rgb(255 255 255 / 5%);
+    color: #f2f6ff;
     font-size: 14px;
     font-weight: 650;
     text-decoration: none;
@@ -79,8 +80,8 @@ nav a:focus-visible {
 }
 
 main {
-    width: min(100% - 40px, 1120px);
-    margin: 38px auto 64px;
+    width: min(100% - 40px, 960px);
+    margin: 28px auto 44px;
 }
 
 main > h2,
@@ -99,10 +100,124 @@ main > p {
     font-size: 16px;
 }
 
+.dashboard-intro {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 4px 0 20px;
+}
+
+.dashboard-intro > div > p:last-child {
+    margin: 0;
+    color: var(--muted);
+}
+
+.eyebrow {
+    margin: 0 0 5px;
+    color: var(--blue-dark);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.section-title {
+    margin: 8px 0 12px;
+    color: var(--navy);
+    font-size: 17px;
+    font-weight: 750;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.dashboard-card {
+    display: flex;
+    min-height: 188px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: 0 8px 22px rgb(16 35 63 / 4%);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    border-color: #b9cae5;
+    box-shadow: 0 12px 28px rgb(16 35 63 / 8%);
+    color: var(--ink);
+}
+
+.dashboard-icon {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 9px;
+    background: #eaf0ff;
+    color: var(--blue-dark);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.dashboard-card-title {
+    color: var(--navy);
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.dashboard-card-text {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.dashboard-card-link {
+    margin-top: auto;
+    color: var(--blue-dark);
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.guide-card {
+    display: flex;
+    max-width: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 16px;
+    padding: 18px 20px;
+    border-color: #d7e2f3;
+    background: #eef4ff;
+    box-shadow: none;
+}
+
+.guide-card h3 {
+    margin: 0 0 4px;
+    font-size: 17px;
+}
+
+.guide-card p:last-child {
+    max-width: 660px;
+    margin: 0;
+    color: #52627a;
+    font-size: 13px;
+}
+
 section {
-    max-width: 760px;
-    margin-top: 24px;
-    padding: clamp(20px, 3vw, 28px);
+    width: 100%;
+    max-width: none;
+    margin-top: 20px;
+    padding: clamp(18px, 2vw, 24px);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--surface);
@@ -110,7 +225,7 @@ section {
 }
 
 section h3 {
-    margin: 0 0 18px;
+    margin: 0 0 12px;
     color: var(--navy);
     font-size: 19px;
     font-weight: 700;
@@ -119,13 +234,13 @@ section h3 {
 
 /* Standalone PHP pages use a simple heading, form, and table layout. */
 body > h1 {
-    width: min(100% - 40px, 1120px);
-    margin: 36px auto 20px;
+    width: min(100% - 40px, 960px);
+    margin: 25px auto 14px;
 }
 
 body > p {
-    width: min(100% - 40px, 1120px);
-    margin: 12px auto;
+    width: min(100% - 40px, 960px);
+    margin: 8px auto;
     color: var(--muted);
 }
 
@@ -139,17 +254,43 @@ body > p[style*="color: red"] {
 
 form {
     display: grid;
-    gap: 9px;
+    gap: 7px;
 }
 
 body > form {
     width: min(100% - 40px, 640px);
-    margin: 18px auto 26px;
-    padding: clamp(20px, 3vw, 28px);
+    margin: 12px auto 18px;
+    padding: clamp(16px, 2vw, 21px);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--surface);
     box-shadow: 0 10px 30px rgb(16 35 63 / 5%);
+}
+
+body > form.data-filter {
+    width: min(100% - 40px, 960px);
+    margin: 14px auto 18px;
+    padding: 18px;
+}
+
+body > h1.compact-heading,
+body > form.content-form {
+    width: min(100% - 40px, 600px);
+}
+
+body > h1.compact-heading {
+    margin-right: auto;
+    margin-left: auto;
+}
+
+body > h1.compact-heading + .back-button {
+    margin-left: max(20px, calc((100% - 600px) / 2));
+}
+
+body > form.content-form {
+    margin-top: 12px;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 label {
@@ -161,8 +302,8 @@ label {
 input,
 select {
     width: 100%;
-    min-height: 46px;
-    padding: 10px 13px;
+    min-height: 42px;
+    padding: 8px 11px;
     border: 1px solid #c6d1df;
     border-radius: 8px;
     background: #fff;
@@ -189,9 +330,9 @@ a.button {
     align-items: center;
     justify-content: center;
     width: fit-content;
-    min-height: 42px;
-    margin-top: 7px;
-    padding: 9px 17px;
+    min-height: 38px;
+    margin-top: 4px;
+    padding: 7px 14px;
     border: 1px solid var(--blue);
     border-radius: 8px;
     background: var(--blue);
@@ -230,9 +371,39 @@ a:hover {
     color: #173c91;
 }
 
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 36px;
+    margin: 0 20px 10px;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    color: #33445c;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    border-color: #b8c8dc;
+    background: #f8faff;
+    color: var(--navy);
+}
+
+body > h1 + .back-button {
+    margin-left: max(20px, calc((100% - 960px) / 2));
+}
+
+body > form .back-button {
+    margin: 0;
+}
+
 body > table {
-    width: min(100% - 40px, 1120px);
-    margin: 20px auto 48px;
+    width: min(100% - 40px, 960px);
+    margin: 14px auto 32px;
     overflow: hidden;
     border: 1px solid var(--line);
     border-collapse: separate;
@@ -244,7 +415,7 @@ body > table {
 
 th,
 td {
-    padding: 13px 15px;
+    padding: 10px 12px;
     border: 0;
     border-bottom: 1px solid var(--line);
     text-align: left;
@@ -289,6 +460,10 @@ form[style*="display:inline"] button {
     font-size: 13px;
 }
 
+body > form br {
+    display: none;
+}
+
 body > table a {
     margin-right: 9px;
 }
@@ -305,29 +480,30 @@ body > a {
     body > p,
     body > form,
     body > table {
-        width: min(100% - 28px, 1120px);
+        width: min(100% - 28px, 960px);
     }
 
     .header-inner {
-        padding: 17px 0;
+        padding: 12px 0;
     }
 
     nav {
-        gap: 4px;
+        gap: 7px;
     }
 
     nav a {
-        min-height: 36px;
-        padding: 6px 9px;
+        min-height: 34px;
+        padding: 5px 9px;
         font-size: 13px;
     }
 
     main {
-        margin-top: 28px;
+        margin-top: 20px;
+        margin-bottom: 28px;
     }
 
     body > h1 {
-        margin-top: 28px;
+        margin-top: 22px;
     }
 
     body > table {
@@ -336,9 +512,49 @@ body > a {
         white-space: nowrap;
     }
 
+    body > form.data-filter {
+        width: min(100% - 28px, 960px);
+        padding: 15px;
+    }
+
+    body > h1.compact-heading,
+    body > form.content-form {
+        width: min(100% - 28px, 600px);
+    }
+
+    section {
+        margin-top: 16px;
+        padding: 18px;
+    }
+
+    .dashboard-intro,
+    .guide-card {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .dashboard-intro {
+        padding-bottom: 14px;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .dashboard-card {
+        min-height: auto;
+        padding: 15px;
+    }
+
+    .guide-card {
+        padding: 16px;
+    }
+
     th,
     td {
-        padding: 11px 12px;
+        padding: 9px 10px;
     }
 }
 
