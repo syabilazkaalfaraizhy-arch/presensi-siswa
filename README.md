@@ -124,6 +124,8 @@ Presensi RFID/
 
 Tiga tabel inti adalah `kelas`, `siswa`, dan `presensi`. Tabel `users` berdiri sendiri untuk autentikasi administrator.
 
+Diagram memakai notasi Chen: persegi panjang adalah entitas, elips adalah atribut, dan belah ketupat adalah relasi. Kardinalitasnya kelas 1:N siswa dan siswa 1:N presensi. `users` tidak digambar karena tidak berelasi dengan entitas inti.
+
 ![ERD Aplikasi Presensi Siswa](docs/erd.svg)
 
 ## Hasil pengujian

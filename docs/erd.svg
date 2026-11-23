@@ -1,68 +1,91 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 610" role="img" aria-labelledby="title description">
-  <title id="title">ERD Aplikasi Presensi Siswa</title>
-  <desc id="description">Relasi kelas satu ke banyak siswa, siswa satu ke banyak presensi. Tabel users terpisah untuk login admin.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 760" role="img" aria-labelledby="title description">
+  <title id="title">ERD Notasi Chen — Aplikasi Presensi Siswa</title>
+  <desc id="description">Entitas kelas berelasi satu ke banyak dengan siswa. Entitas siswa berelasi satu ke banyak dengan presensi. Users tidak digambar karena berdiri sendiri.</desc>
   <defs>
     <style>
       text { font-family: Arial, Helvetica, sans-serif; fill: #142744; }
-      .heading { font-size: 28px; font-weight: 700; }
-      .subtitle { font-size: 15px; fill: #51627c; }
-      .card { fill: #ffffff; stroke: #cbd7e7; stroke-width: 2; }
-      .card-head { fill: #132744; }
-      .table-name { fill: #ffffff; font-size: 20px; font-weight: 700; }
-      .field { font-size: 16px; }
-      .hint { font-size: 13px; fill: #5c6d85; }
-      .edge { stroke: #4168c9; stroke-width: 3; fill: none; }
-      .edge-label { font-size: 14px; font-weight: 700; fill: #3156ad; }
-      .cardinality { font-size: 16px; font-weight: 700; fill: #3156ad; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #52627a; }
+      .entity { fill: #fff; stroke: #18355d; stroke-width: 3; }
+      .relationship { fill: #eef3ff; stroke: #315fc2; stroke-width: 3; }
+      .attribute { fill: #fff; stroke: #7590bd; stroke-width: 2.5; }
+      .entity-label { font-size: 21px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .relationship-label { font-size: 17px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .attribute-label { font-size: 16px; text-anchor: middle; dominant-baseline: middle; }
+      .key { text-decoration: underline; font-weight: 700; }
+      .line { stroke: #60738e; stroke-width: 2.5; fill: none; }
+      .cardinality { font-size: 20px; font-weight: 700; fill: #18355d; text-anchor: middle; }
+      .note { font-size: 14px; fill: #52627a; }
     </style>
   </defs>
-  <rect width="1320" height="610" rx="18" fill="#f3f6fb"/>
-  <text class="heading" x="56" y="54">ERD Aplikasi Presensi Siswa</text>
-  <text class="subtitle" x="56" y="82">Tiga tabel inti dan satu tabel pendukung untuk akun administrator</text>
+
+  <rect width="1400" height="760" rx="20" fill="#f3f6fb"/>
+  <text class="title" x="56" y="58">ERD Aplikasi Presensi Siswa</text>
+  <text class="subtitle" x="56" y="88">Notasi Chen · 3 entitas inti · 2 relasi</text>
+
+  <!-- Kelas attributes -->
+  <line class="line" x1="270" y1="285" x2="270" y2="350"/>
+  <ellipse class="attribute" cx="270" cy="245" rx="95" ry="34"/>
+  <text class="attribute-label key" x="270" y="245">id_kelas</text>
+
+  <line class="line" x1="190" y1="410" x2="161" y2="410"/>
+  <ellipse class="attribute" cx="82" cy="410" rx="79" ry="34"/>
+  <text class="attribute-label" x="82" y="410">nama_kelas</text>
+
+  <line class="line" x1="270" y1="470" x2="270" y2="535"/>
+  <ellipse class="attribute" cx="270" cy="575" rx="75" ry="34"/>
+  <text class="attribute-label" x="270" y="575">jurusan</text>
 
   <!-- Kelas entity -->
-  <rect class="card" x="55" y="145" width="310" height="270" rx="14"/>
-  <path class="card-head" d="M69 145h282a14 14 0 0 1 14 14v48H55v-48a14 14 0 0 1 14-14z"/>
-  <text class="table-name" x="78" y="181">kelas</text>
-  <text class="field" x="78" y="240">PK id_kelas — INT, AUTO_INCREMENT</text>
-  <text class="field" x="78" y="281">nama_kelas — VARCHAR(20), UNIQUE</text>
-  <text class="field" x="78" y="322">jurusan — VARCHAR(50)</text>
-  <text class="hint" x="78" y="376">Satu kelas dapat memiliki banyak siswa.</text>
+  <rect class="entity" x="190" y="350" width="160" height="120" rx="3"/>
+  <text class="entity-label" x="270" y="410">kelas</text>
 
-  <!-- Kelas to Siswa -->
-  <path class="edge" d="M365 274H472"/>
-  <text class="cardinality" x="377" y="260">1</text>
-  <text class="cardinality" x="450" y="260">N</text>
-  <text class="edge-label" x="382" y="300">anggota</text>
+  <!-- Kelas 1:N Siswa relationship -->
+  <line class="line" x1="350" y1="410" x2="372" y2="410"/>
+  <line class="line" x1="488" y1="410" x2="585" y2="410"/>
+  <polygon class="relationship" points="430,350 488,410 430,470 372,410"/>
+  <text class="relationship-label" x="430" y="410">anggota</text>
+  <text class="cardinality" x="360" y="390">1</text>
+  <text class="cardinality" x="555" y="390">N</text>
+
+  <!-- Siswa attributes -->
+  <line class="line" x1="665" y1="285" x2="665" y2="350"/>
+  <ellipse class="attribute" cx="665" cy="245" rx="75" ry="34"/>
+  <text class="attribute-label key" x="665" y="245">nisn</text>
+
+  <line class="line" x1="625" y1="470" x2="568" y2="535"/>
+  <ellipse class="attribute" cx="540" cy="565" rx="68" ry="34"/>
+  <text class="attribute-label" x="540" y="565">nama</text>
+
+  <line class="line" x1="705" y1="470" x2="762" y2="535"/>
+  <ellipse class="attribute" cx="790" cy="565" rx="68" ry="34"/>
+  <text class="attribute-label" x="790" y="565">alamat</text>
 
   <!-- Siswa entity -->
-  <rect class="card" x="475" y="145" width="345" height="270" rx="14"/>
-  <path class="card-head" d="M489 145h317a14 14 0 0 1 14 14v48H475v-48a14 14 0 0 1 14-14z"/>
-  <text class="table-name" x="498" y="181">siswa</text>
-  <text class="field" x="498" y="240">PK nisn — CHAR(10)</text>
-  <text class="field" x="498" y="281">nama — VARCHAR(100)</text>
-  <text class="field" x="498" y="322">alamat — VARCHAR(255), boleh NULL</text>
-  <text class="field" x="498" y="363">id_kelas — INT, FK → kelas.id_kelas</text>
+  <rect class="entity" x="585" y="350" width="160" height="120" rx="3"/>
+  <text class="entity-label" x="665" y="410">siswa</text>
 
-  <!-- Siswa to Presensi -->
-  <path class="edge" d="M820 274H920"/>
-  <text class="cardinality" x="834" y="260">1</text>
-  <text class="cardinality" x="896" y="260">N</text>
-  <text class="edge-label" x="836" y="300">melakukan</text>
+  <!-- Siswa 1:N Presensi relationship -->
+  <line class="line" x1="745" y1="410" x2="842" y2="410"/>
+  <line class="line" x1="958" y1="410" x2="1055" y2="410"/>
+  <polygon class="relationship" points="900,350 958,410 900,470 842,410"/>
+  <text class="relationship-label" x="900" y="410">melakukan</text>
+  <text class="cardinality" x="775" y="390">1</text>
+  <text class="cardinality" x="1025" y="390">N</text>
+
+  <!-- Presensi attributes -->
+  <line class="line" x1="1135" y1="285" x2="1135" y2="350"/>
+  <ellipse class="attribute" cx="1135" cy="245" rx="70" ry="34"/>
+  <text class="attribute-label key" x="1135" y="245">id</text>
+
+  <line class="line" x1="1175" y1="470" x2="1235" y2="535"/>
+  <ellipse class="attribute" cx="1265" cy="565" rx="105" ry="34"/>
+  <text class="attribute-label" x="1265" y="565">tanggal_waktu</text>
 
   <!-- Presensi entity -->
-  <rect class="card" x="923" y="145" width="340" height="270" rx="14"/>
-  <path class="card-head" d="M937 145h312a14 14 0 0 1 14 14v48H923v-48a14 14 0 0 1 14-14z"/>
-  <text class="table-name" x="946" y="181">presensi</text>
-  <text class="field" x="946" y="240">PK id — INT, AUTO_INCREMENT</text>
-  <text class="field" x="946" y="281">nisn — CHAR(10), FK → siswa.nisn</text>
-  <text class="field" x="946" y="322">tanggal_waktu — DATETIME</text>
-  <text class="hint" x="946" y="376">Waktu dibuat otomatis saat tap kartu.</text>
+  <rect class="entity" x="1055" y="350" width="160" height="120" rx="3"/>
+  <text class="entity-label" x="1135" y="410">presensi</text>
 
-  <!-- Supporting user table, intentionally disconnected -->
-  <rect class="card" x="475" y="455" width="345" height="115" rx="14"/>
-  <path class="card-head" d="M489 455h317a14 14 0 0 1 14 14v34H475v-34a14 14 0 0 1 14-14z"/>
-  <text class="table-name" x="498" y="486">users (pendukung)</text>
-  <text class="field" x="498" y="527">id_user (PK) · username (UNIQUE) · password hash</text>
-  <text class="hint" x="498" y="552">Tidak memiliki relasi dengan tabel inti.</text>
+  <text class="note" x="56" y="685">Atribut kunci digarisbawahi. FK tidak ditampilkan pada ERD konseptual.</text>
+  <text class="note" x="56" y="710">Tabel users untuk login berdiri sendiri, sehingga tidak digambar pada ERD.</text>
 </svg>
